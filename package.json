@@ -1,0 +1,16 @@
+{
+  "name": "fullstackopen-part3",
+  "version": "1.0.0",
+  "description": "Phonebook",
+  "homepage": "https://github.com/Dlorodev/fullstack-open-part3#readme",
+  "bugs": {
+    "url": "https://github.com/Dlorodev/fullstack-open-part3/issues"
+  },
+  "license": "ISC",
+  "author": "Dlodev",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
