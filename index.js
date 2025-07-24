@@ -27,6 +27,7 @@ let persons = [
     }
 ]
 
+//custom request logger
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
     console.log('Path:  ', request.path)
@@ -36,7 +37,17 @@ const requestLogger = (request, response, next) => {
 }
 
 app.use(requestLogger);
-app.use(morgan('tiny'));
+//app.use(morgan('tiny'));
+
+//custom token for morgan
+morgan.token('body', function getBody(request) {
+    //console.log(typeof JSON.stringify(request.body));
+    if (request.method === 'POST') {
+        return JSON.stringify(request.body)
+    }
+});
+
+app.use(morgan(':method :url :status :res[content-length] :response-time :body'))
 
 //get all persons
 app.get('/api/persons', (request, response) => {
@@ -80,14 +91,18 @@ app.delete('/api/persons/:id', (request, response) => {
     }
 })
 
+const generateId = () => {
+    const maxId = persons.length > 0 ? Math.floor(Math.random() * 200) : 0;
+    return maxId + 1;
+}
+
 //add one person
 app.post('/api/persons', (request, response) => {
     const body = request.body
     //console.log(body)
-    const newId = Math.floor(Math.random() * 100)
 
     const personObject = {
-        id: newId,
+        id: generateId(),
         name: body.name,
         number: body.number
     }
