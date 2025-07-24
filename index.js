@@ -50,7 +50,7 @@ app.get('/api/persons/:id', (request, response) => {
     if (person) {
         response.send(person)
     } else {
-        response.status(404).end()
+        response.status(404).json({ error: "The contact does not exist" }).end()
     }
 })
 
@@ -71,7 +71,7 @@ app.delete('/api/persons/:id', (request, response) => {
 //add one person
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    console.log(body)
+    //console.log(body)
     const newId = Math.floor(Math.random() * 100)
 
     const personObject = {
@@ -80,10 +80,16 @@ app.post('/api/persons', (request, response) => {
         number: body.number
     }
 
-    persons.push(personObject)
-    persosn = persons.concat(personObject)
-    console.log(`${body.name} has been added!`)
-    response.status(201).send(personObject)
+
+    if (!personObject.name || !personObject.number) {
+        response.status(400).json({ error: 'The contact must have Name and Number' }).end()
+    } else if (persons.some(person => person.name.toLowerCase() === personObject.name.toLowerCase())) {
+        response.status(409).json({ error: 'The name must be unique' }).end()
+    } else {
+        persons = persons.concat(personObject)
+        console.log(`${body.name} has been added!`)
+        response.status(201).send(personObject)
+    }
 })
 
 
