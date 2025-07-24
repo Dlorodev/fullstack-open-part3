@@ -26,10 +26,12 @@ let persons = [
     }
 ]
 
+//get all persons
 app.get('/api/persons', (request, response) => {
     response.send(persons)
 })
 
+//get info
 app.get('/info', (request, response) => {
     const now = new Date();
     //console.log(now.toString())
@@ -39,6 +41,7 @@ app.get('/info', (request, response) => {
     )
 })
 
+//get one person
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id);
     const person = persons.find(p => p.id === id);
@@ -50,6 +53,21 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).end()
     }
 })
+
+//delete one person
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id);
+    const person = persons.find(p => p.id === id);
+    persons = persons.filter(p => p.id !== id);
+    console.log('Persons: ', persons);
+
+    if (!person) {
+        response.status(404).end();
+    } else {
+        response.status(204).end();
+    }
+})
+
 
 app.listen(PORT, () => {
     console.log(`app running in port: ${PORT}`);
