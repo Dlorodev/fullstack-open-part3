@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = 3001;
-
+app.use(express.json());
 
 let persons = [
     {
@@ -66,6 +66,24 @@ app.delete('/api/persons/:id', (request, response) => {
     } else {
         response.status(204).end();
     }
+})
+
+//add one person
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    console.log(body)
+    const newId = Math.floor(Math.random() * 100)
+
+    const personObject = {
+        id: newId,
+        name: body.name,
+        number: body.number
+    }
+
+    persons.push(personObject)
+    persosn = persons.concat(personObject)
+    console.log(`${body.name} has been added!`)
+    response.status(201).send(personObject)
 })
 
 
