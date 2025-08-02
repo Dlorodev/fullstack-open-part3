@@ -110,16 +110,21 @@ const generateId = () => {
 
 //add one person
 app.post('/api/persons', (request, response) => {
-    const body = request.body
-    //console.log(body)
-
+    const body = request.body;
+    if(!body.name){
+        return response.status(400).json({error: 'Name is missing'})
+    }
+    const personToSave = new Person(body);
+    personToSave.save().then(savedPerson => {
+        console.log('New contact saved successfully!');
+        response.status(201).send(savedPerson)
+    })
+    /*console.log(body)
     const personObject = {
         id: generateId(),
         name: body.name,
         number: body.number
     }
-
-
     if (!personObject.name || !personObject.number) {
         response.status(400).json({ error: 'The contact must have Name and Number' }).end()
     } else if (persons.some(person => person.name.toLowerCase() === personObject.name.toLowerCase())) {
@@ -128,7 +133,7 @@ app.post('/api/persons', (request, response) => {
         persons = persons.concat(personObject)
         console.log(`${body.name} has been added!`)
         response.status(201).send(personObject)
-    }
+    }*/
 })
 
 const unknownEndpoint = (request, response) => {
