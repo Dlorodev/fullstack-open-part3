@@ -1,13 +1,18 @@
-const express = require('express');
-const morgan = require('morgan');
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
-const app = express();
-const PORT = process.env.PORT || 3001;
-app.use(express.json());
-app.use(cors());
-app.use(express.static('dist'));
+const app = express()
+const PORT = process.env.PORT
 
+app.use(express.json())
+app.use(cors())
+app.use(express.static('dist'))
+
+
+/*
 let persons = [
     {
         "id": 1,
@@ -29,7 +34,7 @@ let persons = [
         "name": "Mary Poppendieck",
         "number": "39-23-6423122"
     }
-]
+]*/
 
 //custom request logger
 const requestLogger = (request, response, next) => {
@@ -55,7 +60,10 @@ app.use(morgan(':method :url :status :res[content-length] :response-time :body')
 
 //get all persons
 app.get('/api/persons', (request, response) => {
-    response.send(persons)
+    Person.find({}).then(persons => {
+        response.send(persons)
+    })
+    //response.send(persons)
 })
 
 //get info

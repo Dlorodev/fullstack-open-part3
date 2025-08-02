@@ -30,6 +30,7 @@ if (process.argv.length < 3) {
         result.forEach(person => {
             console.log(person.name, person.number)
         })
+        console.log(typeof result)
         mongoose.connection.close()
     })
 } else if (process.argv.length === 5) {
