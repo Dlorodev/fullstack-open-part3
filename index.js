@@ -69,11 +69,14 @@ app.get('/api/persons', (request, response) => {
 //get info
 app.get('/info', (request, response) => {
     const now = new Date();
-    //console.log(now.toString())
-    response.send(
-        `<p>Phonebook has info for ${persons.length} people</p>
+    Person.find({}).then(personList => {
+        //response.send(personList.length)
+        response.send(
+            `<p>Phonebook has info for ${personList.length} people</p>
         <p>${now}</p>`
-    )
+        )
+    }).catch(error => next(error))
+    //console.log(now.toString())
 })
 
 //get one person
