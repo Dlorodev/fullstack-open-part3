@@ -91,6 +91,10 @@ app.get('/api/persons/:id', (request, response) => {
 
 //delete one person
 app.delete('/api/persons/:id', (request, response) => {
+    Person.findByIdAndDelete(request.params.id).then(result => {
+        response.status(204).end()
+    })
+    /*
     const id = Number(request.params.id);
     const person = persons.find(p => p.id === id);
     persons = persons.filter(p => p.id !== id);
@@ -100,7 +104,7 @@ app.delete('/api/persons/:id', (request, response) => {
         response.status(404).end();
     } else {
         response.status(204).end();
-    }
+    }*/
 })
 
 const generateId = () => {
@@ -111,8 +115,8 @@ const generateId = () => {
 //add one person
 app.post('/api/persons', (request, response) => {
     const body = request.body;
-    if(!body.name){
-        return response.status(400).json({error: 'Name is missing'})
+    if (!body.name) {
+        return response.status(400).json({ error: 'Name is missing' })
     }
     const personToSave = new Person(body);
     personToSave.save().then(savedPerson => {
