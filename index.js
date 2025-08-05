@@ -62,7 +62,7 @@ app.use(morgan(':method :url :status :res[content-length] :response-time :body')
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
         response.send(persons)
-    })
+    }).catch(error => next(error))
     //response.send(persons)
 })
 
@@ -77,7 +77,16 @@ app.get('/info', (request, response) => {
 })
 
 //get one person
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id).then(person => {
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(400).end()
+        }
+    }).catch(error => next(error))
+
+    /*
     const id = Number(request.params.id);
     const person = persons.find(p => p.id === id);
     console.log(person, typeof person);
@@ -86,14 +95,14 @@ app.get('/api/persons/:id', (request, response) => {
         response.send(person)
     } else {
         response.status(404).json({ error: "The contact does not exist" }).end()
-    }
+    }*/
 })
 
 //delete one person
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id).then(result => {
         response.status(204).end()
-    })
+    }).catch(error => next(error))
     /*
     const id = Number(request.params.id);
     const person = persons.find(p => p.id === id);
@@ -113,7 +122,7 @@ const generateId = () => {
 }
 
 //add one person
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body;
     if (!body.name) {
         return response.status(400).json({ error: 'Name is missing' })
@@ -122,7 +131,7 @@ app.post('/api/persons', (request, response) => {
     personToSave.save().then(savedPerson => {
         console.log('New contact saved successfully!');
         response.status(201).send(savedPerson)
-    })
+    }).catch(error => next(error))
     /*console.log(body)
     const personObject = {
         id: generateId(),
@@ -150,3 +159,13 @@ app.use(unknownEndpoint)
 app.listen(PORT, () => {
     console.log(`app running in port: ${PORT}`);
 })
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'Malformatted id' })
+    }
+    next(error)
+}
+
+app.use(errorHandler)
