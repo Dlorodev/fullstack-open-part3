@@ -119,10 +119,10 @@ app.delete('/api/persons/:id', (request, response, next) => {
     }*/
 })
 
-const generateId = () => {
+/*const generateId = () => {
     const maxId = persons.length > 0 ? Math.floor(Math.random() * 200) : 0;
     return maxId + 1;
-}
+}*/
 
 //add one person
 app.post('/api/persons', (request, response, next) => {
@@ -159,7 +159,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         name: body.name,
         number: body.number,
     }
-    Person.findByIdAndUpdate(request.params.id, person, { new: true }).then(updatedPerson => {
+    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' }).then(updatedPerson => {
         response.json(updatedPerson)
     }).catch(error => next(error))
 })
@@ -179,6 +179,8 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'Malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
     next(error)
 }
