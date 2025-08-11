@@ -45,7 +45,7 @@ const requestLogger = (request, response, next) => {
     next()
 }
 
-app.use(requestLogger);
+app.use(requestLogger)
 //app.use(morgan('tiny'));
 
 //custom token for morgan
@@ -54,7 +54,7 @@ morgan.token('body', function getBody(request) {
     if (request.method === 'POST') {
         return JSON.stringify(request.body)
     }
-});
+})
 
 app.use(morgan(':method :url :status :res[content-length] :response-time :body'))
 
@@ -68,7 +68,7 @@ app.get('/api/persons', (request, response) => {
 
 //get info
 app.get('/info', (request, response) => {
-    const now = new Date();
+    const now = new Date()
     Person.find({}).then(personList => {
         //response.send(personList.length)
         response.send(
@@ -126,13 +126,13 @@ app.delete('/api/persons/:id', (request, response, next) => {
 
 //add one person
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body;
+    const body = request.body
     if (!body.name) {
         return response.status(400).json({ error: 'Name is missing' })
     }
-    const personToSave = new Person(body);
+    const personToSave = new Person(body)
     personToSave.save().then(savedPerson => {
-        console.log('New contact saved successfully!');
+        console.log('New contact saved successfully!')
         response.status(201).send(savedPerson)
     }).catch(error => next(error))
     /*console.log(body)
@@ -172,7 +172,7 @@ app.use(unknownEndpoint)
 
 
 app.listen(PORT, () => {
-    console.log(`app running in port: ${PORT}`);
+    console.log(`app running in port: ${PORT}`)
 })
 
 const errorHandler = (error, request, response, next) => {
